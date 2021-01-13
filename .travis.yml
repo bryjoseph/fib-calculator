@@ -1,0 +1,33 @@
+language: generic
+# config property
+
+# need super user permissions to run this build
+sudo: required
+
+# next must have docker
+services:
+  - docker
+
+# a series of steps before the project tests run (use Dockerfile.dev from client)
+before_install:
+  - docker build -t bryjos44/fib-calculator-testing -f ./client/Dockerfile.dev ./client
+
+# all the different commands needed to run a test suite
+# could add additional test suites in other container locations below
+script:
+  - docker run -e CI=true bryjos44/fib-calculator-testing npm run test
+
+after_success:
+  - docker build -t bryjos44/fibcalculator-client ./client
+  - docker build -t bryjos44/fibcalculator-nginx ./nginx
+  - docker build -t bryjos44/fibcalculator-api ./server
+  - docker build -t bryjos44/fibcalculator-worker ./worker
+
+# push images to docker hub
+# 1st log in to Docker CLI
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+# 2nd push to Docker repo
+- docker push bryjos44/fibcalculator-client
+- docker push bryjos44/fibcalculator-nginx
+- docker push bryjos44/fibcalculator-api
+- docker push bryjos44/fibcalculator-worker
