@@ -24,9 +24,9 @@ after_success:
 
 # push images to docker hub
 # 1st log in to Docker CLI
-- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 # 2nd push to Docker repo
-- docker push bryjos44/fibcalculator-client
-- docker push bryjos44/fibcalculator-nginx
-- docker push bryjos44/fibcalculator-api
-- docker push bryjos44/fibcalculator-worker
+  - docker push bryjos44/fibcalculator-client
+  - docker push bryjos44/fibcalculator-nginx
+  - docker push bryjos44/fibcalculator-api
+  - docker push bryjos44/fibcalculator-worker
