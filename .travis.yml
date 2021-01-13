@@ -14,7 +14,7 @@ before_install:
 # all the different commands needed to run a test suite
 # could add additional test suites in other container locations below
 script:
-  - docker run -e CI=true bryjos44/fib-calculator-testing npm run test
+  - docker run -e CI=true bryjos44/fib-calculator-testing npm test
 
 after_success:
   - docker build -t bryjos44/fibcalculator-client ./client
