@@ -1,5 +1,4 @@
 language: generic
-# config property
 
 # need super user permissions to run this build
 sudo: required
