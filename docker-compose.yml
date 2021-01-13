@@ -1,0 +1,71 @@
+version: '3'
+# services that must be used for the application
+services: 
+  # postgres
+  postgres: 
+    image: 'postgres:latest'
+    # must set superuser password in latest pg config
+    environment:
+      - POSTGRES_PASSWORD=postgres_password
+  redis:
+    image: 'redis:latest'
+  # 1st redis server config
+  api:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./server
+    volumes: 
+      # leave this directory as is on container
+      - /app/node_modules
+      # if accessing /app in container look instead in project directory ./server
+      - ./server:/app
+    environment:
+      # sets environment variable(s) at run time
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PGUSER=postgres
+      - PGHOST=postgres
+      - PGDATABASE=postgres
+      - PGPASSWORD=postgres_password
+      - PGPORT=5432
+    depends_on: 
+      - postgres
+  # react project frontend
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./client
+    volumes:
+      # leave as in for container
+      - /app/node_modules
+      # watching for changes in source code
+      - ./client:/app
+    stdin_open: true
+    environment: 
+      - CHOKIDAR_USEPOLLING=true
+  # 2nd redis config
+  worker:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes:
+      # leave as in for container
+      - /app/node_modules
+      # watching for changes in source code
+      - ./worker:/app
+    stdin_open: true
+    environment: 
+      - CHOKIDAR_USEPOLLING=true
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports: 
+      - '3050:80'
+    depends_on:
+      - api
+      - client
+  
