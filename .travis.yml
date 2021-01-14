@@ -30,3 +30,16 @@ after_success:
   - docker push bryjos44/fibcalculator-nginx
   - docker push bryjos44/fibcalculator-api
   - docker push bryjos44/fibcalculator-worker
+
+# config for AWS Elastic Beanstalk
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "fibonacci-calculator"
+  env: "FibonacciCalculator-env"
+  bucket_name: "elasticbeanstalk-us-east-2-116861327569"
+  bucket_path: "fibonacci-calculator"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY

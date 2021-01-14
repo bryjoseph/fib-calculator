@@ -1,0 +1,40 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+        {
+            "name": "fibcalculator-client",
+            "image": "bryjos44/fibcalculator-client",
+            "hostname": "client",
+            "essential": false,
+            "memory": 128
+        },
+        {
+            "name": "fibcalculator-api",
+            "image": "bryjos44/fibcalculator-api",
+            "hostname": "api",
+            "essential": false,
+            "memory": 128
+        },
+        {
+            "name": "fibcalculator-worker",
+            "image": "bryjos44/fibcalculator-worker",
+            "hostname": "worker",
+            "essential": false,
+            "memory": 128
+        },
+        {
+            "name": "fibcalculator-nginx",
+            "image": "bryjos44/fibcalculator-nginx",
+            "hostname": "nginx",
+            "essential": true,
+            "portMappings": [
+                {
+                    "hostPort": 80,
+                    "containerPort": 80
+                }
+            ],
+            "links": ["fibcalculator-client", "fibcalculator-api"],
+            "memory": 128
+        }
+    ]
+}
