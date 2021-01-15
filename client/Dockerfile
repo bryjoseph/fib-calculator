@@ -1,11 +1,11 @@
 # Build Phase pt1: Base image
-FROM node:alpine
+FROM node:alpine as builder
 
 # Build Phase pt2: Working directory to resolve node v15 build error
 WORKDIR '/app'
 
 # Build Phase pt3: Copy over dependency file to working dir
-COPY ./package.json .
+COPY ./package.json ./
 
 # Build Phase pt4: then install dependencies
 RUN npm install
@@ -24,7 +24,7 @@ FROM nginx
 EXPOSE 3000
 
 # Run Phase pt3: Bring over nginx default.conf file
-COPY ./nginx/deafult.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Run Phase pt4: Copy over folder from npm build from first step with from=0
-COPY --from=0 /app/build /usr/share/nginx/html
+COPY --from=builder /app/build /usr/share/nginx/html
